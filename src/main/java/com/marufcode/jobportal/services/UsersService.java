@@ -5,6 +5,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import com.marufcode.jobportal.entity.Users;
 import java.util.Date;
+import java.util.Optional;
 
 @Service
 public class UsersService {
@@ -23,6 +24,10 @@ public class UsersService {
 
 
         return userRepository.save(users);
+    }
+
+    public Optional<Users> getUserByEmail(String email){
+        return userRepository.findByEmail(email);
     }
 
 

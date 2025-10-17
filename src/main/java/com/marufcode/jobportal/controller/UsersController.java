@@ -12,6 +12,7 @@ import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PostMapping;
 
 import java.util.List;
+import java.util.Optional;
 
 @Controller
 public class UsersController {
@@ -35,9 +36,21 @@ public class UsersController {
     }
 
     @PostMapping("/register/new")
-    public String userRegistraion(@Valid Users users)
+    public String userRegistraion(@Valid Users users, Model model)
     {
-        System.out.println(users);
+        // check first if the provided email already exists in database
+        Optional<Users> optionalUsers = usersService.getUserByEmail(users.getEmail());
+
+        List<UsersType> usersTypes = usersTypeService.getAll();
+
+        // if email exits throw an error messsage
+        if(optionalUsers.isPresent()){
+            model.addAttribute("error","Email already registered, try to login or register with other email");
+            model.addAttribute("getAllTypes",usersTypes);
+            model.addAttribute("user", new Users());
+
+            return "register";
+        }
 
         usersService.addNew(users);
 
